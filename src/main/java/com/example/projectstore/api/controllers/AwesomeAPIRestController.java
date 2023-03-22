@@ -1,6 +1,6 @@
 package com.example.projectstore.api.controllers;
 import com.example.projectstore.api.services.AwesomeAPIService;
-import com.example.projectstore.awesomeAPI.AwesomeAPIObjectDTO;
+import com.example.projectstore.api.models.Conversion;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,7 +16,7 @@ public class AwesomeAPIRestController {
     }
 
     @GetMapping("/{conversionCode}")
-    public AwesomeAPIObjectDTO search(@PathVariable String conversionCode){
+    public Conversion search(@PathVariable String conversionCode){
        return service.search(conversionCode);
     }
 }

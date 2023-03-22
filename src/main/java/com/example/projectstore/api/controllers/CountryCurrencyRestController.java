@@ -1,8 +1,8 @@
 package com.example.projectstore.api.controllers;
 
-import com.example.projectstore.clients.ibge.CountryCurrency;
-import com.example.projectstore.clients.ibge.ibgeDTO.CountryCurrencyDTO;
-import com.example.projectstore.clients.ibge.CountryRestRepository;
+import com.example.projectstore.api.models.CountryCurrency;
+import com.example.projectstore.clients.ibgeDTO.CountryCurrencyDTO;
+import com.example.projectstore.api.repositories.CountryRestRepository;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

@@ -2,13 +2,13 @@ package com.example.projectstore.api.repositories;
 
 
 import com.example.projectstore.api.models.Products;
-import com.example.projectstore.dummyJsonProducts.ProductsListDTO;
+import com.example.projectstore.clients.dummyJsonProducts.ProductsListDTO;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
-
 import java.util.List;
+
 
 @FeignClient(name = "ProductsRestRepository", url = "${dummyjsonproductsapi.url}")
 public interface ProductsRestRepository {

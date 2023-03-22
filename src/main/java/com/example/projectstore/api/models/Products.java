@@ -1,17 +1,18 @@
 package com.example.projectstore.api.models;
 
+import com.example.projectstore.api.util.Converter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
-
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
 @Getter
 @Setter
 @ToString
-public class Products {
+public class Products implements Converter {
+
     @JsonProperty("id")
     private Long id;
     @JsonProperty("title")
@@ -24,4 +25,9 @@ public class Products {
     private String category;
     @JsonProperty("images")
     private List<String> imgList;
+
+    @Override
+    public void converter( BigDecimal coefficient) {
+    setPrice(this.price.multiply(coefficient));
+    }
 }
