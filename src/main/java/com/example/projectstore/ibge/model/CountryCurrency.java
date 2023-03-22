@@ -1,4 +1,4 @@
-package com.example.projectstore.ibge;
+package com.example.projectstore.ibge.model;
 
 import com.example.projectstore.ibge.jsonClasses.CountryJsonCode;
 import com.example.projectstore.ibge.jsonClasses.CountryJsonCurrencyUnitsId;
