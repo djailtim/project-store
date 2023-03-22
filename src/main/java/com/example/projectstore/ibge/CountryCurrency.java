@@ -1,19 +1,22 @@
 package com.example.projectstore.ibge;
 
+import com.example.projectstore.ibge.jsonClasses.CountryJsonCode;
+import com.example.projectstore.ibge.jsonClasses.CountryJsonCurrencyUnitsId;
+import com.example.projectstore.ibge.jsonClasses.CountryJsonName;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
+
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter @Setter @ToString
 public class CountryCurrency {
-    @JsonProperty("abreviado")
-    private String countryName;
-
-    @JsonProperty("ISO-4217-ALPHA")
-    private String currencyId;
-
+    @JsonProperty("id")
+    private CountryJsonCode countryJsonCode;
     @JsonProperty("nome")
-    private String currencyName;
+    private CountryJsonName countryJsonName;
+    @JsonProperty("unidades-monetarias")
+    private List<CountryJsonCurrencyUnitsId> countryJsonCurrencyUnitsId;
 
 }
