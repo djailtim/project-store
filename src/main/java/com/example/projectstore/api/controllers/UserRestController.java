@@ -1,5 +1,6 @@
 package com.example.projectstore.api.controllers;
-import com.example.projectstore.api.models.User;
+import com.example.projectstore.api.DTO.UserDTO;
+import com.example.projectstore.api.responses.UserResponse;
 import com.example.projectstore.api.services.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -18,27 +19,27 @@ public class UserRestController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public User create(@RequestBody User user){
+    public UserResponse create(@RequestBody UserDTO user){
         return userService.save(user);
     }
 
     @GetMapping
-    public List<User> findAll(){
+    public List<UserResponse> findAll(){
         return userService.findAll();
     }
 
     @GetMapping(params = {"country"})
-    public List<User> search(@RequestParam("country") String country) {
+    public List<UserResponse> search(@RequestParam("country") String country) {
        return userService.findByCountry(country);
     }
     @GetMapping("/{id}")
-    public User findById(@PathVariable Long id){
+    public UserResponse findById(@PathVariable Long id){
         return userService.findById(id);
     }
 
 
     @PutMapping("/{id}")
-    public User update(@PathVariable Long id, @RequestBody User user) {
+    public UserResponse update(@PathVariable Long id, @RequestBody UserDTO user) {
     return userService.update(id, user);
     }
 

@@ -1,46 +1,60 @@
 package com.example.projectstore.api.services;
+import com.example.projectstore.api.DTO.UserDTO;
 import com.example.projectstore.api.models.User;
 import com.example.projectstore.api.repositories.UserRepository;
+import com.example.projectstore.api.responses.UserResponse;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 
 @Service
 public class UserService {
     private final UserRepository userRepository;
+    private final ModelMapper modelMapper;
 
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
+        this.modelMapper = new ModelMapper();
     }
 
-    public User save(User user) {
-        return (userRepository.findAll().stream().noneMatch(u -> u.equals(user))) ? userRepository.save(user) : null;
+    public UserResponse save(UserDTO userDTO) {
+        if (userRepository.findAll().stream().noneMatch(user -> user.getName().equals(userDTO.getName()) &&
+                user.getEmail().equals(userDTO.getEmail()))){
+            userRepository.save(modelMapper.map(userDTO, User.class));
+            return modelMapper.map(userDTO, UserResponse.class);
+        }else return null;
     }
 
-    public List<User> findAll(){
-        return userRepository.findAll();
+    public List<UserResponse> findAll(){
+        List<User> userList = userRepository.findAll();
+        return userList.stream().map(user ->  modelMapper.map(user, UserResponse.class)).toList();
     }
 
-    public User findById(Long id) {
-        return userRepository.findById(id).orElse(null);
+    public UserResponse findById(Long id) {
+        User user = userRepository.findById(id).orElse(null);
+        return modelMapper.map(user, UserResponse.class);
     }
 
-    public User update(Long id, User newUser) {
-        User oldUser = findById(id);
-        oldUser.setCurrency(newUser.getCurrency());
-        oldUser.setName(newUser.getName());
-        oldUser.setEmail(newUser.getEmail());
-        oldUser.setPassword(newUser.getPassword());
-        oldUser.setCountry(newUser.getCountry());
-        return userRepository.save(oldUser);
+    public UserResponse update(Long id, UserDTO userDTO) {
+        User user = userRepository.findById(id).orElse(null);
+        if (user != null) {
+            user.setCurrency(userDTO.getCurrency());
+            user.setName(userDTO.getName());
+            user.setEmail(userDTO.getEmail());
+            user.setPassword(userDTO.getPassword());
+            user.setCountry(userDTO.getCountry());
+            userRepository.save(user);
+            return modelMapper.map(userDTO, UserResponse.class);
+        }else return null;
     }
 
     public void delete(Long id) {
         userRepository.deleteById(id);
     }
 
-    public List<User> findByCountry(String country) {
-        return userRepository.findByCountry(country);
+    public List<UserResponse> findByCountry(String country) {
+        List<User> userList = userRepository.findByCountry(country);
+        return userList.stream().map(user ->  modelMapper.map(user, UserResponse.class)).toList();
     }
 }
 

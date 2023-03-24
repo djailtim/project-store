@@ -1,23 +1,14 @@
-package com.example.projectstore.api.models;
-import jakarta.persistence.*;
+package com.example.projectstore.api.DTO;
+import com.example.projectstore.api.models.User;
 import lombok.*;
 
 import java.util.Objects;
-
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
-@Entity
-@Table(name = "tb_user")
-public class User {
-
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-
-    private Long id;
-
+@ToString
+public class UserDTO {
     private String name;
 
     private String email;
@@ -39,4 +30,6 @@ public class User {
     public int hashCode() {
         return Objects.hash(getName(), getEmail());
     }
+
 }
+
