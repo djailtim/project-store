@@ -1,6 +1,5 @@
 package com.example.projectstore.api.controller;
 
-
 import com.example.projectstore.api.dto.UserDTO;
 import com.example.projectstore.api.responses.UserResponse;
 import com.example.projectstore.api.services.UserService;
@@ -24,12 +23,30 @@ public class UserRestController {
         return userService.findAll();
     }
 
-
-
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public UserResponse create(@RequestBody UserDTO user){
         return userService.save(user);
+    }
+
+    @GetMapping("/{id}")
+    public UserResponse findById(@PathVariable Long id) {
+        return userService.findById(id);
+    }
+
+    @PutMapping("/{id}")
+    public UserResponse update(@PathVariable Long id, @RequestBody UserDTO user) {
+        return userService.update(id, user);
+    }
+
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable Long id) {
+        userService.delete(id);
+    }
+
+    @GetMapping(params = {"country"})
+    public List<UserResponse> findByCountry(@RequestParam String country) {
+        return userService.findByCountry(country);
     }
 
 }

@@ -8,13 +8,9 @@ import lombok.*;
 public class UserDTO {
 
     private String name;
-
     private String email;
-
     private String password;
-
     private String country;
-
     private String currency;
 
 }
