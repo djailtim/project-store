@@ -1,3 +1,12 @@
 package com.example.projectstore.api.responses;
 
-public record UserResponse(String name, String country, String currency) {}
+import lombok.*;
+
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter @Setter @ToString
+public class UserResponse {
+    private String name;
+    private String country;
+    private String currency;
+}
