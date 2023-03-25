@@ -27,6 +27,13 @@ public class ExceptionHandlerControllerAdvice extends ResponseEntityExceptionHan
         return new ResponseEntity<>(errorMessage, httpStatus);
     }
 
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<Object> handleUserNotFoundException(UserNotFoundException ex) {
+        String errorMessage = ex.getMessage();
+        HttpStatus httpStatus = HttpStatus.NOT_FOUND;
+        return new ResponseEntity<>(errorMessage, httpStatus);
+    }
+
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(
             MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatusCode status,
