@@ -1,4 +1,4 @@
-package com.example.projectstore.ibge;
+package com.example.projectstore.clients.ibge;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;

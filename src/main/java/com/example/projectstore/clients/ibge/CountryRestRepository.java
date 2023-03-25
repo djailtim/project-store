@@ -1,4 +1,4 @@
-package com.example.projectstore.ibge;
+package com.example.projectstore.clients.ibge;
 
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;

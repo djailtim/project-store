@@ -1,7 +1,7 @@
 package com.example.projectstore.api.controller;
 
-import com.example.projectstore.ibge.CountryCurrency;
-import com.example.projectstore.ibge.CountryRestRepository;
+import com.example.projectstore.clients.ibge.CountryCurrency;
+import com.example.projectstore.clients.ibge.CountryRestRepository;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
