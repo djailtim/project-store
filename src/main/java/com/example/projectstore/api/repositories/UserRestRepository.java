@@ -12,4 +12,6 @@ public interface UserRestRepository extends JpaRepository<User, Long> {
     Optional<User> findByEmail(String email);
 
     List<User> findByCountryContainingIgnoreCase(String country);
+
+
 }

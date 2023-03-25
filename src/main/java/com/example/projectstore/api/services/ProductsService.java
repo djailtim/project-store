@@ -15,7 +15,6 @@ public class ProductsService {
         this.productsRepository = productsRepository;
     }
 
-
     public List<ProductsDTO> getAll() {
         return productsRepository.getAll().getProductsListDTO();
     }
