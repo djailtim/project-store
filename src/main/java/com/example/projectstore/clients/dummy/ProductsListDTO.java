@@ -9,5 +9,5 @@ import java.util.List;
 @Getter @Setter @ToString
 public class ProductsListDTO {
     @JsonProperty("products")
-    private List<ProductsDTO> productsDTO;
+    private List<ProductsDTO> productsListDTO;
 }

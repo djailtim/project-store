@@ -10,6 +10,8 @@ import lombok.*;
 @Setter
 @ToString
 public class ProductsDTO {
+    @JsonProperty("id")
+    private Long productDTOid;
     @JsonProperty("title")
     private String title;
     @JsonProperty("description")
