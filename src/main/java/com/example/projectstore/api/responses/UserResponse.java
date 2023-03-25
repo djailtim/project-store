@@ -7,6 +7,7 @@ import lombok.*;
 @Getter @Setter @ToString
 public class UserResponse {
     private String name;
+    private String email;
     private String country;
     private String currency;
 }
