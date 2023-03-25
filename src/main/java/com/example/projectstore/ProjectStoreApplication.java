@@ -9,6 +9,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 public class ProjectStoreApplication {
 
     public static void main(String[] args) {
+
         SpringApplication.run(ProjectStoreApplication.class, args);
     }
 

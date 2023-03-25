@@ -1,4 +1,4 @@
-package com.example.projectstore.api;
+package com.example.projectstore.api.controller;
 
 import com.example.projectstore.ibge.CountryCurrency;
 import com.example.projectstore.ibge.CountryRestRepository;
