@@ -8,7 +8,6 @@ import com.example.projectstore.api.repositories.UserRestRepository;
 import com.example.projectstore.api.responses.UserResponse;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Optional;
 
