@@ -24,5 +24,7 @@ public class ProductsDTO {
     private String category;
     @JsonProperty("thumbnail")
     private String thumbnail;
+    @JsonProperty("stock")
+    private Integer stock;
 
 }

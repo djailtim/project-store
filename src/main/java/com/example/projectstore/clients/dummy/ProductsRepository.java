@@ -19,6 +19,4 @@ public interface ProductsRepository {
     @GetMapping(value = "/search", params = "q")
     ProductsListDTO search(@RequestParam("q") String query);
 
-//    @GetMapping(value = "/searchbyname", params = "n")
-//    ProductsListDTO searchByName(@RequestParam("n") String name);
 }
