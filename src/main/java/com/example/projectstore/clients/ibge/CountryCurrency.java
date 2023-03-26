@@ -7,13 +7,10 @@ import lombok.*;
 @NoArgsConstructor
 @Getter @Setter @ToString
 public class CountryCurrency {
-    @JsonProperty("abreviado")
-    private String countryName;
+    private String id;
 
-    @JsonProperty("ISO-4217-ALPHA")
-    private String currencyId;
+    private String nameCountry;
 
-    @JsonProperty("nome")
-    private String currencyName;
+    private String unityMonetary;
 
 }
