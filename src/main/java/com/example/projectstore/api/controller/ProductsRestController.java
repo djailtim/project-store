@@ -1,6 +1,6 @@
 package com.example.projectstore.api.controller;
 
-import com.example.projectstore.api.response.ProductResponse;
+import com.example.projectstore.api.responses.ProductResponse;
 import com.example.projectstore.api.services.ProductsService;
 import org.springframework.web.bind.annotation.*;
 

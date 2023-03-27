@@ -1,12 +1,16 @@
 package com.example.projectstore.api.services;
 import com.example.projectstore.api.model.Product;
 import com.example.projectstore.api.repositories.ProductDBRepository;
-import com.example.projectstore.api.response.ProductResponse;
+import com.example.projectstore.api.responses.ProductResponse;
+import com.example.projectstore.clients.dummy.ProductsDTO;
 import com.example.projectstore.clients.dummy.ProductsRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class ProductsService {
@@ -22,31 +26,37 @@ public class ProductsService {
     }
 
     public List<ProductResponse> getAll(){
-        DBRepository.saveAll(productsRepository.getAll().getProductsListDTO().stream()
-                .map(productsDTO -> modelMapper.map(productsDTO, Product.class)).toList());
+        List<ProductsDTO> dtoList = productsRepository.getAll().getProductsListDTO();
+        checkToSave(dtoList);
        return productsRepository.getAll().getProductsListDTO().stream().map( productsDTO ->
                 modelMapper.map(productsDTO, ProductResponse.class)).toList();
     }
 
     public List<ProductResponse> findByCategory(String categoryName) {
-        DBRepository.saveAll(productsRepository.findByCategory(categoryName).getProductsListDTO().stream()
-                .map(productsDTO -> modelMapper.map(productsDTO, Product.class)).toList());
+        List<ProductsDTO> dtoList = productsRepository.findByCategory(categoryName).getProductsListDTO();
+        checkToSave(dtoList);
         return productsRepository.findByCategory(categoryName).getProductsListDTO().stream().map( productsDTO ->
                 modelMapper.map(productsDTO, ProductResponse.class)).toList();
     }
 
     public List<ProductResponse> getById(Long productDTOId) {
-        DBRepository.save(modelMapper.map(productsRepository.getById(productDTOId), Product.class));
+        List<ProductsDTO> dtoList = List.of(productsRepository.getById(productDTOId));
+        checkToSave(dtoList);
         return new ArrayList<>(List.of(productsRepository.getById(productDTOId))).stream().map( productsDTO ->
                 modelMapper.map(productsDTO, ProductResponse.class)).toList();
     }
 
 
     public List<ProductResponse> search(String name) { //OPTIONAL???
-        DBRepository.saveAll(productsRepository.search(name).getProductsListDTO().stream()
-                .map(productsDTO -> modelMapper.map(productsDTO, Product.class)).toList());
+        List<ProductsDTO> dtoList = productsRepository.search(name).getProductsListDTO();
+        checkToSave(dtoList);
         return productsRepository.search(name).getProductsListDTO().stream().filter(products ->
                 products.getTitle().toLowerCase().contains(name.toLowerCase())).map( productsDTO ->
                 modelMapper.map(productsDTO, ProductResponse.class)).toList();
+    }
+    public void checkToSave(List<ProductsDTO> listDTO) {
+        listDTO.stream().map(productDTO -> modelMapper.map(productDTO, Product.class))
+                .filter(productDTO -> !DBRepository.findAll().contains(productDTO))
+                .forEach(DBRepository::save);
     }
 }

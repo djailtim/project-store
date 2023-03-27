@@ -1,4 +1,4 @@
-package com.example.projectstore.api.response;
+package com.example.projectstore.api.responses;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;

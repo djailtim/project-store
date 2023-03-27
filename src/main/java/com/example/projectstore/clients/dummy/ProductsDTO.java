@@ -4,6 +4,8 @@ package com.example.projectstore.clients.dummy;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
+import java.util.Objects;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -27,4 +29,20 @@ public class ProductsDTO {
     @JsonProperty("stock")
     private Integer stock;
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ProductsDTO that)) return false;
+        return getProductDTOid().equals(that.getProductDTOid());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getProductDTOid());
+    }
+
+    public boolean nullAttribute() {
+        return this.getProductDTOid() == null || this.getTitle() == null || this.getCategory() == null || this.getPrice() == null ||
+                this.getBrand() == null || this.getStock() == null || this.getDescription() == null || this.getThumbnail() == null;
+    }
 }
