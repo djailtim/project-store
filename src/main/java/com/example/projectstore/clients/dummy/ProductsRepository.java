@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @FeignClient(value = "productsRepository", url = "https://dummyjson.com/products/")
 public interface ProductsRepository {
-    @GetMapping
-    ProductsListDTO getAll();
+    @GetMapping(params = "limit")
+    ProductsListDTO getAll(@RequestParam("limit") Long limit);
 
     @GetMapping("/category/{categoryName}")
     ProductsListDTO findByCategory(@PathVariable String categoryName);

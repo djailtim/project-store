@@ -26,9 +26,9 @@ public class ProductsService {
     }
 
     public List<ProductResponse> getAll(){
-        List<ProductsDTO> dtoList = productsRepository.getAll().getProductsListDTO();
+        List<ProductsDTO> dtoList = productsRepository.getAll(100L).getProductsListDTO();
         checkToSave(dtoList);
-       return productsRepository.getAll().getProductsListDTO().stream().map( productsDTO ->
+       return productsRepository.getAll(100L).getProductsListDTO().stream().map( productsDTO ->
                 modelMapper.map(productsDTO, ProductResponse.class)).toList();
     }
 
