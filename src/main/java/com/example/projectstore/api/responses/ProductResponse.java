@@ -3,6 +3,8 @@ package com.example.projectstore.api.responses;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
+import java.math.BigDecimal;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -15,7 +17,7 @@ public class ProductResponse {
 
     private String description;
 
-    private String price;
+    private BigDecimal price;
 
     private String brand;
 

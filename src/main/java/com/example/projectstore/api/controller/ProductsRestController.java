@@ -31,6 +31,6 @@ public class ProductsRestController {
 
     @GetMapping(value = "/searchbyname", params = "q")
     public List<ProductResponse> searchByName(@RequestParam("q") String name) {
-        return productsService.search(name);
+        return productsService.searchByName(name);
     }
 }

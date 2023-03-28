@@ -10,4 +10,9 @@ public interface ProductDBRepository extends JpaRepository<Product, Long> {
 
     @Override
     <S extends Product> List<S> saveAll(Iterable<S> entities);
+    Optional<Product> findProductByProductDTOid (Long productDTOId);
+
+    List<Product> findByCategory(String categoryName);
+
+    List<Product> searchByTitleStartingWith(String name);
 }

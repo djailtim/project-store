@@ -8,50 +8,37 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 public class ProductsService {
-    private final ProductsRepository productsRepository;
     private final ProductDBRepository DBRepository;
     private final ModelMapper modelMapper;
 
     public ProductsService(ProductsRepository productsRepository, ProductDBRepository DBRepository) {
-        this.productsRepository = productsRepository;
         this.DBRepository = DBRepository;
         this.modelMapper = new ModelMapper();
-
+        checkToSave(productsRepository.getAll(100L).getProductsListDTO());
     }
 
     public List<ProductResponse> getAll(){
-        List<ProductsDTO> dtoList = productsRepository.getAll(100L).getProductsListDTO();
-        checkToSave(dtoList);
-       return productsRepository.getAll(100L).getProductsListDTO().stream().map( productsDTO ->
+
+       return DBRepository.findAll().stream().map( productsDTO ->
                 modelMapper.map(productsDTO, ProductResponse.class)).toList();
     }
 
     public List<ProductResponse> findByCategory(String categoryName) {
-        List<ProductsDTO> dtoList = productsRepository.findByCategory(categoryName).getProductsListDTO();
-        checkToSave(dtoList);
-        return productsRepository.findByCategory(categoryName).getProductsListDTO().stream().map( productsDTO ->
+        return DBRepository.findByCategory(categoryName).stream().map( productsDTO ->
                 modelMapper.map(productsDTO, ProductResponse.class)).toList();
     }
 
     public List<ProductResponse> getById(Long productDTOId) {
-        List<ProductsDTO> dtoList = List.of(productsRepository.getById(productDTOId));
-        checkToSave(dtoList);
-        return new ArrayList<>(List.of(productsRepository.getById(productDTOId))).stream().map( productsDTO ->
+        return new ArrayList<>(List.of(DBRepository.findProductByProductDTOid(productDTOId))).stream().map( productsDTO ->
                 modelMapper.map(productsDTO, ProductResponse.class)).toList();
     }
 
 
-    public List<ProductResponse> search(String name) { //OPTIONAL???
-        List<ProductsDTO> dtoList = productsRepository.search(name).getProductsListDTO();
-        checkToSave(dtoList);
-        return productsRepository.search(name).getProductsListDTO().stream().filter(products ->
-                products.getTitle().toLowerCase().contains(name.toLowerCase())).map( productsDTO ->
+    public List<ProductResponse> searchByName(String name) { //OPTIONAL???
+        return DBRepository.searchByTitleStartingWith(name).stream().map( productsDTO ->
                 modelMapper.map(productsDTO, ProductResponse.class)).toList();
     }
     public void checkToSave(List<ProductsDTO> listDTO) {
