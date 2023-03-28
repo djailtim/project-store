@@ -5,6 +5,7 @@ import com.example.projectstore.api.services.ProductsService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/products")
@@ -25,7 +26,7 @@ public class ProductsRestController {
        return productsService.findByCategory(categoryName);
     }
     @GetMapping("/{id}")
-    public List<ProductResponse> getId(@PathVariable("id") Long productDTOId){
+    public Optional<ProductResponse> getId(@PathVariable("id") Long productDTOId){
         return productsService.getById(productDTOId);
     }
 

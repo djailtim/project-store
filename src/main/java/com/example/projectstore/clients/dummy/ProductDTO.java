@@ -11,7 +11,7 @@ import java.util.Objects;
 @Getter
 @Setter
 @ToString
-public class ProductsDTO {
+public class ProductDTO {
     @JsonProperty("id")
     private Long productDTOid;
     @JsonProperty("title")
@@ -32,7 +32,7 @@ public class ProductsDTO {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof ProductsDTO that)) return false;
+        if (!(o instanceof ProductDTO that)) return false;
         return getProductDTOid().equals(that.getProductDTOid());
     }
 

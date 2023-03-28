@@ -19,7 +19,7 @@ public class Order {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    private Long user_id;
+    private Long userId;
     @OneToMany
     private List<OrderLine> orderLineList;
 

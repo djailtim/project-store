@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 import java.util.Optional;
 
-public interface ProductDBRepository extends JpaRepository<Product, Long> {
+public interface ProductsDBRepository extends JpaRepository<Product, Long> {
 
     @Override
     <S extends Product> List<S> saveAll(Iterable<S> entities);

@@ -14,7 +14,7 @@ public interface ProductsRepository {
     ProductsListDTO findByCategory(@PathVariable String categoryName);
 
     @GetMapping("/{id}")
-    ProductsDTO getById(@PathVariable("id") Long productDTOId);
+    ProductDTO getById(@PathVariable("id") Long productDTOId);
 
     @GetMapping(value = "/search", params = "q")
     ProductsListDTO search(@RequestParam("q") String query);

@@ -12,6 +12,7 @@ import java.math.BigDecimal;
 @ToString
 public class ProductResponse {
 
+    private Long productDTOId;
 
     private String title;
 

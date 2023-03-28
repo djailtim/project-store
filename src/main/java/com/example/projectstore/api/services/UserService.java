@@ -58,7 +58,6 @@ public class UserService {
         user.setCountry(userDTO.getCountry());
         user.setCurrency(userDTO.getCurrency());
         userRestRepository.save(user);
-
         return modelMapper.map(user, UserResponse.class);
     }
 

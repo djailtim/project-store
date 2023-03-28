@@ -13,7 +13,7 @@ import java.util.List;
 @ToString
 public class OrderDTO {
 
-    private Long user_id;
+    private Long userId;
     @OneToMany
     private List<OrderLine> orderLineList;
 
