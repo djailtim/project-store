@@ -1,4 +1,5 @@
 package com.example.projectstore.api.order;
+import com.example.projectstore.api.responses.OrderResponse;
 import com.example.projectstore.api.responses.OrderLineResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -28,9 +29,10 @@ public class OrderLineRestController {
         return orderLineService.delete(userId, productDTOId);
     }
 
-
-
-
+    @PostMapping("/placeOrder")
+    public OrderResponse placeOrder(@PathVariable Long userId){
+        return orderLineService.placeOrder(userId);
+    }
 
 }
 

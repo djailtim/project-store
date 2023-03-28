@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.util.Objects;
 
 @Entity
@@ -27,7 +28,7 @@ public class Product {
     @Column(name = "description")
     private String description;
     @Column(name = "price")
-    private String price;
+    private BigDecimal price;
     @Column(name = "brand")
     private String brand;
     @Column(name = "category")

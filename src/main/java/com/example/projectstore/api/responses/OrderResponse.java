@@ -1,5 +1,5 @@
-package com.example.projectstore.api.order;
-
+package com.example.projectstore.api.responses;
+import com.example.projectstore.api.order.OrderLine;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -11,9 +11,8 @@ import java.util.List;
 @Getter
 @Setter
 @ToString
-public class OrderDTO {
+public class OrderResponse {
 
-    private Long userId;
     @OneToMany
     private List<OrderLine> orderLineList;
 
