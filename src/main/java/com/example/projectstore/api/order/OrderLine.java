@@ -23,6 +23,7 @@ public class OrderLine {
     private Long productId;
     private String title;
     private Long quantity;
+    private Boolean ordered;
 
     @Override
     public boolean equals(Object o) {

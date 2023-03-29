@@ -1,6 +1,5 @@
 package com.example.projectstore.api.order;
 
-import com.example.projectstore.api.repositories.UserRestRepository;
 import com.example.projectstore.api.responses.OrderResponse;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,5 +30,9 @@ public class OrderRestController {
     public void delete(@PathVariable Long orderId){
         orderService.delete(orderId);
 
+    }
+    @PostMapping("/placeOrder")
+    public OrderResponse placeOrder(@PathVariable Long userId){
+        return orderService.placeOrder(userId);
     }
 }

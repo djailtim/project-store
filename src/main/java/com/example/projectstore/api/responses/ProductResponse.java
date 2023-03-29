@@ -1,6 +1,5 @@
 package com.example.projectstore.api.responses;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
 import java.math.BigDecimal;
@@ -12,7 +11,7 @@ import java.math.BigDecimal;
 @ToString
 public class ProductResponse {
 
-    private Long productDTOId;
+    private Long id;
 
     private String title;
 
