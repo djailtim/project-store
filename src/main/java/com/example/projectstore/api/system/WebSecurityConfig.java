@@ -39,7 +39,8 @@ public class WebSecurityConfig {
         // Login
         "/auth/login",
             "/user/**",
-            "/products/**"
+            "/products/**",
+            "/products**"
     };
 
 

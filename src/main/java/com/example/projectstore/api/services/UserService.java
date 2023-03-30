@@ -33,7 +33,10 @@ public class UserService {
     }
 
     public UserResponse save(UserRequest userRequest) {
-        User userExists = this.userRepository.findByEmail(userRequest.getEmail()).orElseThrow(() -> new DuplicatedEmailException("E-mail já cadastrado."));
+        Optional<User> userExists = this.userRepository.findByEmail(userRequest.getEmail());
+        if(userExists.isPresent()) {
+            throw new DuplicatedEmailException("E-mail já cadastrado.");
+        }
         userRequest.setPassword(passwordEncoder.encode(userRequest.getPassword()));
         User userCreated = this.userRepository.save(modelMapper.map(userRequest, User.class));
         return modelMapper.map(userCreated, UserResponse.class);

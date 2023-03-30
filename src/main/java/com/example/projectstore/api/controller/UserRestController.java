@@ -19,8 +19,6 @@ public class UserRestController {
 
     private final UserService userService;
 
-
-
     @GetMapping
     public List<UserResponse> findAll() {
         return userService.findAll();
