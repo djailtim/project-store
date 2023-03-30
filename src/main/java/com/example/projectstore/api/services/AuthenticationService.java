@@ -1,6 +1,5 @@
 package com.example.projectstore.api.services;
 
-import com.example.projectstore.api.auth.AuthenticationRequest;
 import com.example.projectstore.api.auth.AuthenticationResponse;
 import com.example.projectstore.api.exceptions.UserNotFoundException;
 import com.example.projectstore.api.model.User;
