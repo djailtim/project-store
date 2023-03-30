@@ -1,39 +1,43 @@
 package com.example.projectstore.api.services;
 
-import com.example.projectstore.api.dto.UserDTO;
+import com.example.projectstore.api.dto.UserRequest;
 import com.example.projectstore.api.exceptions.DuplicatedEmailException;
 import com.example.projectstore.api.exceptions.UserNotFoundException;
 import com.example.projectstore.api.model.User;
-import com.example.projectstore.api.repositories.UserRestRepository;
+import com.example.projectstore.api.repositories.UserRepository;
 import com.example.projectstore.api.responses.UserResponse;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 public class UserService {
-    private final UserRestRepository userRestRepository;
+    private final UserRepository userRepository;
     private final ModelMapper modelMapper;
+    private final PasswordEncoder passwordEncoder;
 
-    private UserService(UserRestRepository userRestRepository) {
-        this.userRestRepository = userRestRepository;
+    private UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
         this.modelMapper = new ModelMapper();
     }
 
     public List<UserResponse> findAll() {
-        List<User> usersList = userRestRepository.findAll();
+        List<User> usersList = userRepository.findAll();
         return usersList.stream()
                 .map(user -> modelMapper.map(user, UserResponse.class))
                 .toList();
     }
 
-    public UserResponse save(UserDTO userDTO) {
-        Optional<User> userExists = this.userRestRepository.findByEmail(userDTO.getEmail());
+    public UserResponse save(UserRequest userRequest) {
+        Optional<User> userExists = this.userRepository.findByEmail(userRequest.getEmail());
         if (userExists.isPresent()) {
             throw new DuplicatedEmailException("E-mail já cadastrado.");
         }
-        User userCreated = this.userRestRepository.save(modelMapper.map(userDTO, User.class));
+        userRequest.setPassword(passwordEncoder.encode(userRequest.getPassword()));
+        User userCreated = this.userRepository.save(modelMapper.map(userRequest, User.class));
         return modelMapper.map(userCreated, UserResponse.class);
     }
 
@@ -43,32 +47,32 @@ public class UserService {
     }
 
     private User findUser(Long id) {
-        Optional<User> user = userRestRepository.findById(id);
+        Optional<User> user = userRepository.findById(id);
         if (user.isEmpty()) {
             throw new UserNotFoundException("Usuário não encontrado.");
         }
         return modelMapper.map(user, User.class);
     }
 
-    public UserResponse update(Long id, UserDTO userDTO) {
+    public UserResponse update(Long id, UserRequest userRequest) {
         User user = this.findUser(id);
-        user.setName(userDTO.getName());
-        user.setEmail(userDTO.getEmail());
-        user.setPassword(userDTO.getPassword());
-        user.setCountry(userDTO.getCountry());
-        user.setCurrency(userDTO.getCurrency());
-        userRestRepository.save(user);
+        user.setName(userRequest.getName());
+        user.setEmail(userRequest.getEmail());
+        user.setPassword(userRequest.getPassword());
+        user.setCountry(userRequest.getCountry());
+        user.setCurrency(userRequest.getCurrency());
+        userRepository.save(user);
         return modelMapper.map(user, UserResponse.class);
     }
 
 
     public void delete(Long id) {
         this.findUser(id);
-        userRestRepository.deleteById(id);
+        userRepository.deleteById(id);
     }
 
     public List<UserResponse> findByCountry(String country) {
-        List<User> usersList = this.userRestRepository.findByCountryContainingIgnoreCase(country);
+        List<User> usersList = this.userRepository.findByCountryContainingIgnoreCase(country);
         return usersList.stream()
                 .map(user -> modelMapper.map(user, UserResponse.class))
                 .toList();

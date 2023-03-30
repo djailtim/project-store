@@ -1,6 +1,6 @@
 package com.example.projectstore.api.order;
 import com.example.projectstore.api.repositories.ProductsDBRepository;
-import com.example.projectstore.api.repositories.UserRestRepository;
+import com.example.projectstore.api.repositories.UserRepository;
 import com.example.projectstore.api.responses.OrderResponse;
 import com.example.projectstore.api.services.AwesomeService;
 import org.modelmapper.ModelMapper;
@@ -16,17 +16,17 @@ public class OrderService {
     private final ModelMapper modelMapper;
     private final OrderLineRepository orderLineRepository;
     private final ProductsDBRepository productsDBRepository;
-    private final UserRestRepository userRestRepository;
+    private final UserRepository userRepository;
     private final AwesomeService awesomeService;
     private final OrderLineService orderLineService;
 
     public OrderService(OrderRepository orderRepository, OrderLineRepository orderLineRepository, ProductsDBRepository productsDBRepository,
-                        UserRestRepository userRestRepository, AwesomeService awesomeService, OrderLineService orderLineService) {
+                        UserRepository userRepository, AwesomeService awesomeService, OrderLineService orderLineService) {
         this.orderRepository = orderRepository;
         this.modelMapper = new ModelMapper();
         this.orderLineRepository = orderLineRepository;
         this.productsDBRepository = productsDBRepository;
-        this.userRestRepository = userRestRepository;
+        this.userRepository = userRepository;
         this.awesomeService = awesomeService;
         this.orderLineService = orderLineService;
     }
@@ -49,7 +49,7 @@ public class OrderService {
         return productsDBRepository.findById(entityId).orElseThrow().getPrice();
     }
     private String getUserCurrency(Long userId){
-      return  userRestRepository.findById(userId).orElseThrow().getCurrency();
+      return  userRepository.findById(userId).orElseThrow().getCurrency();
     }
     private BigDecimal getUserCurrencyValue(Long userId) {
         if(getUserCurrency(userId).equals("USD")) return BigDecimal.valueOf(1);

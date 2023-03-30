@@ -1,22 +1,25 @@
 package com.example.projectstore.api.controller;
 
-import com.example.projectstore.api.dto.UserDTO;
+import com.example.projectstore.api.dto.UserRequest;
 import com.example.projectstore.api.responses.UserResponse;
 import com.example.projectstore.api.services.UserService;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/user")
+@RequiredArgsConstructor
+@Log4j2
 public class UserRestController {
 
     private final UserService userService;
 
-    public UserRestController(UserService userService){
-        this.userService = userService;
-    }
+
 
     @GetMapping
     public List<UserResponse> findAll() {
@@ -25,7 +28,7 @@ public class UserRestController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public UserResponse create(@RequestBody UserDTO user){
+    public UserResponse create(@RequestBody UserRequest user){
         return userService.save(user);
     }
 
@@ -35,7 +38,7 @@ public class UserRestController {
     }
 
     @PutMapping("/{id}")
-    public UserResponse update(@PathVariable Long id, @RequestBody UserDTO user) {
+    public UserResponse update(@PathVariable Long id, @RequestBody UserRequest user) {
         return userService.update(id, user);
     }
 
