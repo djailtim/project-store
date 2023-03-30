@@ -7,6 +7,7 @@ import com.example.projectstore.api.model.User;
 import com.example.projectstore.api.repositories.UserRepository;
 import com.example.projectstore.api.responses.UserResponse;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -32,10 +33,7 @@ public class UserService {
     }
 
     public UserResponse save(UserRequest userRequest) {
-        Optional<User> userExists = this.userRepository.findByEmail(userRequest.getEmail());
-        if (userExists.isPresent()) {
-            throw new DuplicatedEmailException("E-mail já cadastrado.");
-        }
+        User userExists = this.userRepository.findByEmail(userRequest.getEmail()).orElseThrow(() -> new DuplicatedEmailException("E-mail já cadastrado."));
         userRequest.setPassword(passwordEncoder.encode(userRequest.getPassword()));
         User userCreated = this.userRepository.save(modelMapper.map(userRequest, User.class));
         return modelMapper.map(userCreated, UserResponse.class);
@@ -47,10 +45,7 @@ public class UserService {
     }
 
     private User findUser(Long id) {
-        Optional<User> user = userRepository.findById(id);
-        if (user.isEmpty()) {
-            throw new UserNotFoundException("Usuário não encontrado.");
-        }
+        User user = userRepository.findById(id).orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado."));
         return modelMapper.map(user, User.class);
     }
 

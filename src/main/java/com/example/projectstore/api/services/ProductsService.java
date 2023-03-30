@@ -1,4 +1,5 @@
 package com.example.projectstore.api.services;
+import com.example.projectstore.api.exceptions.CategoryNotFoundException;
 import com.example.projectstore.api.model.Product;
 import com.example.projectstore.api.repositories.ProductsDBRepository;
 import com.example.projectstore.api.responses.ProductResponse;
@@ -28,8 +29,10 @@ public class ProductsService {
     }
 
     public List<ProductResponse> findByCategory(String categoryName) {
-        return DBRepository.findByCategory(categoryName).stream().map( productsDTO ->
+        List<ProductResponse> products = DBRepository.findByCategory(categoryName).stream().map(productsDTO ->
                 modelMapper.map(productsDTO, ProductResponse.class)).toList();
+        if (products.isEmpty()) throw new CategoryNotFoundException("Categoria não encontrada.");
+        return products;
     }
 
     public Optional<ProductResponse> getById(Long productDTOId) {

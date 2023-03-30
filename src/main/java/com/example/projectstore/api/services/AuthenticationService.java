@@ -8,6 +8,7 @@ import com.example.projectstore.api.system.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -20,15 +21,12 @@ public class AuthenticationService {
     private final JwtService jwtService;
 
     public AuthenticationResponse login(String email, String password) {
-        Optional<User> user = userRepository.findByEmail(email);
-        if (user.isEmpty()) {
-            throw new UserNotFoundException("Usuário não encontrado.");
-        }
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado."));
         var authentication = new UsernamePasswordAuthenticationToken(email, password);
         authenticationManager.authenticate(authentication);
 
-        String token = jwtService.createToken(user.get());
-        return new AuthenticationResponse(user.get().getId(), token);
+        String token = jwtService.createToken(user);
+        return new AuthenticationResponse(user.getId(), token);
     }
 
 }
