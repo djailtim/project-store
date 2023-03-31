@@ -11,6 +11,7 @@ import com.example.projectstore.api.repositories.UserRepository;
 import com.example.projectstore.api.responses.OrderLineResponse;
 import com.example.projectstore.api.system.JwtService;
 import jakarta.servlet.http.HttpServletRequest;
+import org.aspectj.weaver.ast.Or;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
@@ -43,9 +44,12 @@ public class OrderLineService {
     public OrderLineResponse save(HttpServletRequest request, Long productId, Long quantity) {
         String token = getToken(request);
         Long userId = getUserIdByToken(token);
-        if (orderLineRepository.getAllByUserId(userId).stream()
-                .anyMatch(orderLine -> orderLine.getProductId().equals(productId) && !orderLine.getOrdered())) {
-            throw new DuplicatedException("Linha de pedido duplicada"); //ESTOURAR EXCESSAO
+        List<OrderLine> lista = orderLineRepository.findAll().stream().filter(orderLine ->
+                        orderLine.getUserId().equals(userId))
+        .filter(orderLine -> orderLine.getProductId().equals(productId) && !orderLine.getOrdered()).toList() ;
+        if (!lista.isEmpty()) {
+                throw new DuplicatedException("Linha de pedido duplicada");
+
         }
         OrderLine orderLine = new OrderLine();
         orderLine.setQuantity(quantity);

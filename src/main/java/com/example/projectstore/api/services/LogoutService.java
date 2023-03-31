@@ -46,10 +46,11 @@ public class LogoutService implements LogoutHandler {
         }
         final String jwt = header.substring(7);
         var storedToken = tokenRepository.findByToken(jwt);
-        storedToken.orElseThrow(() -> new NotFoundException("token nao encontrado")).setExpired(true);
+        storedToken.ifPresent(tokenValidator -> tokenValidator.setExpired(true));
         Long userId =storedToken.orElseThrow().getUserId();
-        Optional<TokenValidator> tokenValidatorList = tokenRepository.findAllByUserId(userId);
-        if (tokenValidatorList.isPresent()){
+       List<TokenValidator> tokenValidatorList = tokenRepository.findAll().stream().filter(tokenValidator ->
+                tokenValidator.getUserId().equals(userId)).toList();
+        if (!tokenValidatorList.isEmpty()){
             List<TokenValidator> tokenValidatorListExpired = tokenValidatorList.stream().peek(tokenFromList -> tokenFromList.setExpired(true)).toList();
             tokenRepository.saveAll(tokenValidatorListExpired);
         }

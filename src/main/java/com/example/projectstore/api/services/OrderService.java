@@ -87,7 +87,8 @@ public class OrderService {
     public OrderResponse placeOrder(HttpServletRequest request) {
         String token = getToken(request);
         Long userId = getUserIdByToken(token);
-        List<OrderLine> orderLineList = orderLineRepository.getAllByUserId(userId).stream().filter(orderLine -> !orderLine.getOrdered()).toList();
+        List<OrderLine> orderLineList = orderLineRepository.findAll().stream().filter(orderLine -> orderLine.getUserId().equals(userId))
+                .filter(orderLine -> !orderLine.getOrdered()).toList();
         if (orderLineList.isEmpty()) throw new NotFoundException("Linha de pedido nao encontrada.");
         Order order = new Order();
         order.setUserId(userId);

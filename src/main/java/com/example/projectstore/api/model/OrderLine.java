@@ -25,17 +25,6 @@ public class OrderLine {
     private Long quantity;
     private Boolean ordered;
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof OrderLine orderLine)) return false;
-        return getUserId().equals(orderLine.getUserId()) && getProductId().equals(orderLine.getProductId()) && getTitle().equals(orderLine.getTitle());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(getUserId(), getProductId(), getTitle());
-    }
 }
 
 

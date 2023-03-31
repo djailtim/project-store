@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -26,8 +27,9 @@ public class AuthenticationService {
 
     public AuthenticationResponse login(String email, String password) {
         User user = userRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado."));
-        Optional<TokenValidator> tokenValidatorList = tokenRepository.findAllByUserId(user.getId());
-        if (tokenValidatorList.isPresent()){
+        List<TokenValidator> tokenValidatorList = tokenRepository.findAll().stream()
+                .filter(tokenValidator -> tokenValidator.getUserId().equals(user.getId())).toList();
+        if (!tokenValidatorList.isEmpty()){
             List<TokenValidator> tokenValidatorListExpired = tokenValidatorList.stream().peek(tokenFromList -> tokenFromList.setExpired(true)).toList();
             tokenRepository.saveAll(tokenValidatorListExpired);
         }
