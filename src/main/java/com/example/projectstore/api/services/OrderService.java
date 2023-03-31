@@ -11,7 +11,9 @@ import com.example.projectstore.api.repositories.ProductsDBRepository;
 import com.example.projectstore.api.repositories.UserRepository;
 import com.example.projectstore.api.responses.OrderResponse;
 import com.example.projectstore.api.system.JwtService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.modelmapper.ModelMapper;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -43,7 +45,8 @@ public class OrderService {
         this.jwtService = jwtService;
     }
 
-    public List<OrderResponse> getAll(String token) {
+    public List<OrderResponse> getAll(HttpServletRequest request) {
+        String token = getToken(request);
         Long userId = getUserIdByToken(token);
         return orderRepository.findAll().stream().filter(order -> order.getUserId().equals(userId))
                 .map(order -> modelMapper.map(order, OrderResponse.class)).toList();
@@ -55,14 +58,16 @@ public class OrderService {
         Optional<User> userOptional = userRepository.findByEmail(email);
         return userOptional.orElseThrow(() -> new NotFoundException("Usuario nao encontrado")).getId();
     }
-    public OrderResponse getById(Long orderId, String token) {
+    public OrderResponse getById(Long orderId,HttpServletRequest request) {
+        String token = getToken(request);
        Long userId = getUserIdByToken(token);
        Order orderOptional = orderRepository.findById(orderId).orElseThrow(() -> new NotFoundException("Pedido nao encontrado"));
        if (orderOptional.getUserId().equals(userId)) return modelMapper.map(orderOptional, OrderResponse.class);
        else throw new UserNotMatchOrderException("Pedido de usuario diferente.");
     }
 
-    public void delete(Long orderId, String token) {
+    public void delete(Long orderId, HttpServletRequest request) {
+        String token = getToken(request);
         Long userId = getUserIdByToken(token);
         Order orderOptional = orderRepository.findById(orderId).orElseThrow(() -> new NotFoundException("Pedido nao encontrado"));
         if (orderOptional.getUserId().equals(userId)) orderRepository.deleteById(orderId);
@@ -79,9 +84,12 @@ public class OrderService {
         if(getUserCurrency(userId).equals("USD")) return BigDecimal.valueOf(1);
         return awesomeService.search("USD-" + getUserCurrency(userId)).getCoefficient();
     }
-    public OrderResponse placeOrder(String token) {
+    public OrderResponse placeOrder(HttpServletRequest request) {
+        String token = getToken(request);
         Long userId = getUserIdByToken(token);
-        List<OrderLine> orderLineList = orderLineRepository.getAllByUserId(userId).stream().filter(orderLine -> !orderLine.getOrdered()).toList();
+        List<OrderLine> orderLineList = orderLineRepository.findAll().stream().filter(orderLine -> orderLine.getUserId().equals(userId))
+                .filter(orderLine -> !orderLine.getOrdered()).toList();
+        if (orderLineList.isEmpty()) throw new NotFoundException("Linha de pedido nao encontrada.");
         Order order = new Order();
         order.setUserId(userId);
         order.setOrderLineList(orderLineList);
@@ -93,5 +101,8 @@ public class OrderService {
         orderRepository.save(order);
         orderLineService.setOrdered(orderLineList);
         return modelMapper.map(order, OrderResponse.class);
+    }
+    private String getToken(HttpServletRequest request){
+        return request.getHeader(HttpHeaders.AUTHORIZATION).substring(7);
     }
 }
