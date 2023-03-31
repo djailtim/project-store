@@ -10,7 +10,9 @@ import com.example.projectstore.api.repositories.ProductsDBRepository;
 import com.example.projectstore.api.repositories.UserRepository;
 import com.example.projectstore.api.responses.OrderLineResponse;
 import com.example.projectstore.api.system.JwtService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.modelmapper.ModelMapper;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -38,11 +40,12 @@ public class OrderLineService {
         return userOptional.orElseThrow(() -> new NotFoundException("Usuario nao encontrado")).getId();
     }
 
-    public OrderLineResponse save(String token, Long productId, Long quantity) {
+    public OrderLineResponse save(HttpServletRequest request, Long productId, Long quantity) {
+        String token = getToken(request);
         Long userId = getUserIdByToken(token);
         if (orderLineRepository.getAllByUserId(userId).stream()
-           .anyMatch(orderLine -> orderLine.getProductId().equals(productId) && !orderLine.getOrdered())) {
-           throw new DuplicatedException("Linha de pedido duplicada"); //ESTOURAR EXCESSAO
+                .anyMatch(orderLine -> orderLine.getProductId().equals(productId) && !orderLine.getOrdered())) {
+            throw new DuplicatedException("Linha de pedido duplicada"); //ESTOURAR EXCESSAO
         }
         OrderLine orderLine = new OrderLine();
         orderLine.setQuantity(quantity);
@@ -54,28 +57,30 @@ public class OrderLineService {
         return modelMapper.map(orderLine, OrderLineResponse.class);
     }
 
-    public OrderLineResponse delete(String token, Long productId) {
+    public OrderLineResponse delete(HttpServletRequest request, Long productId) {
+        String token = getToken(request);
         Long userId = getUserIdByToken(token);
         OrderLine orderLine = findById(userId, productId);
         orderLineRepository.delete(orderLine);
         return modelMapper.map(orderLine, OrderLineResponse.class);
     }
-    public OrderLineResponse update(String token, Long productId, Long quantity) {
+    public OrderLineResponse update(HttpServletRequest request, Long productId, Long quantity) {
+        String token = getToken(request);
         Long userId = getUserIdByToken(token);
-            OrderLine OrderLine = findById(userId, productId);
-            OrderLine.setQuantity(quantity);
-            orderLineRepository.save(OrderLine);
+        OrderLine OrderLine = findById(userId, productId);
+        OrderLine.setQuantity(quantity);
+        orderLineRepository.save(OrderLine);
         return modelMapper.map(OrderLine, OrderLineResponse.class);
     }
 
     public void setOrdered(List<OrderLine> orderLineList){
         orderLineList.stream().peek(orderLine -> orderLine.setOrdered(true)).forEach(orderLineRepository::save);
-        }
+    }
 
     private OrderLine findById(Long userId, Long productId){
-       return orderLineRepository.findAll().stream().filter(orderLine ->
-               orderLine.getUserId().equals(userId) && orderLine.getProductId().equals(productId) && !orderLine.getOrdered())
-               .findFirst().orElseThrow(() -> new NotFoundException("Linha de pedido nao encontrada"));
+        return orderLineRepository.findAll().stream().filter(orderLine ->
+                        orderLine.getUserId().equals(userId) && orderLine.getProductId().equals(productId) && !orderLine.getOrdered())
+                .findFirst().orElseThrow(() -> new NotFoundException("Linha de pedido nao encontrada"));
     }
 
     private String getProductEntityTitle(Long productId){
@@ -83,10 +88,15 @@ public class OrderLineService {
     }
 
 
-    public List<OrderLineResponse> findAllAvaliable(String token) {
+    public List<OrderLineResponse> findAllAvaliable(HttpServletRequest request) {
+        String token = getToken(request);
         Long userId = getUserIdByToken(token);
         return orderLineRepository.findAll().stream()
                 .filter(orderLine -> orderLine.getUserId().equals(userId)  && !orderLine.getOrdered())
                 .map(orderLine -> modelMapper.map(orderLine, OrderLineResponse.class)).toList();
+    }
+
+    private String getToken(HttpServletRequest request){
+        return request.getHeader(HttpHeaders.AUTHORIZATION).substring(7);
     }
 }

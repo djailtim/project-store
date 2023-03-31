@@ -1,5 +1,6 @@
 package com.example.projectstore.api.services;
 
+import com.example.projectstore.api.exceptions.NotFoundException;
 import com.example.projectstore.api.model.TokenValidator;
 import com.example.projectstore.api.repositories.TokenRepository;
 import com.example.projectstore.api.responses.AuthenticationResponse;
@@ -12,6 +13,9 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class AuthenticationService {
@@ -22,15 +26,23 @@ public class AuthenticationService {
 
     public AuthenticationResponse login(String email, String password) {
         User user = userRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado."));
+        Optional<TokenValidator> tokenValidatorList = tokenRepository.findAllByUserId(user.getId());
+        if (tokenValidatorList.isPresent()){
+            List<TokenValidator> tokenValidatorListExpired = tokenValidatorList.stream().peek(tokenFromList -> tokenFromList.setExpired(true)).toList();
+            tokenRepository.saveAll(tokenValidatorListExpired);
+        }
+
         var authentication = new UsernamePasswordAuthenticationToken(email, password);
         authenticationManager.authenticate(authentication);
         String token = jwtService.createToken(user);
+
 
         TokenValidator tokenValidator = new TokenValidator();
         tokenValidator.setExpired(false);
         tokenValidator.setUserId(user.getId());
         tokenValidator.setToken(token);
         tokenValidator.setRole(user.getRole());
+
         tokenRepository.save(tokenValidator);
         return new AuthenticationResponse(user.getId(), token);
     }

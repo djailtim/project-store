@@ -43,7 +43,8 @@ public class WebSecurityConfig {
         // Login
         "/auth/login",
             "/storelogin",
-            "/user"
+            "/user",
+            "/products/**"
     };
 
 
@@ -59,8 +60,7 @@ public class WebSecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/admin/user/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/admin/user/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/admin/user/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.POST, "/products/**").hasAnyRole("ADMIN", "USER")
-                        .requestMatchers(HttpMethod.GET, "/user/orderline").hasAnyRole("ADMIN", "USER")
+                        .requestMatchers(HttpMethod.GET, "/user/orderline/**").hasAnyRole("ADMIN", "USER")
                         .requestMatchers(HttpMethod.POST, "/user/orderline/**").hasAnyRole("ADMIN", "USER")
                         .requestMatchers(HttpMethod.PUT, "/user/orderline/**").hasAnyRole("ADMIN", "USER")
                         .requestMatchers(HttpMethod.DELETE, "/user/orderline/**").hasAnyRole("ADMIN", "USER")

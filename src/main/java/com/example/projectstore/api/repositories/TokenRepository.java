@@ -7,4 +7,5 @@ import java.util.Optional;
 
 public interface TokenRepository extends JpaRepository<TokenValidator, Long> {
     Optional<TokenValidator> findByToken(String jwt);
+    Optional<TokenValidator> findAllByUserId(Long userId);
 }

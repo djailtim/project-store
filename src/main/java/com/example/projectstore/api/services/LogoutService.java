@@ -1,6 +1,7 @@
 package com.example.projectstore.api.services;
 
 import com.example.projectstore.api.exceptions.NotFoundException;
+import com.example.projectstore.api.model.TokenValidator;
 import com.example.projectstore.api.model.User;
 import com.example.projectstore.api.repositories.TokenRepository;
 import com.example.projectstore.api.repositories.UserRepository;
@@ -12,6 +13,9 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class LogoutService implements LogoutHandler {
@@ -43,7 +47,14 @@ public class LogoutService implements LogoutHandler {
         final String jwt = header.substring(7);
         var storedToken = tokenRepository.findByToken(jwt);
         storedToken.orElseThrow(() -> new NotFoundException("token nao encontrado")).setExpired(true);
+        Long userId =storedToken.orElseThrow().getUserId();
+        Optional<TokenValidator> tokenValidatorList = tokenRepository.findAllByUserId(userId);
+        if (tokenValidatorList.isPresent()){
+            List<TokenValidator> tokenValidatorListExpired = tokenValidatorList.stream().peek(tokenFromList -> tokenFromList.setExpired(true)).toList();
+            tokenRepository.saveAll(tokenValidatorListExpired);
+        }
         tokenRepository.save(storedToken.get());
+
 
 
     }
