@@ -51,7 +51,7 @@ public class ProductsService {
     }
 
     private BigDecimal getCoefficient(String token) {
-        String email =  jwtService.extractUsername(token);
+        String email =  jwtService.extractUsername(token); /*ESTOURAR EXCEÇÃO*/
         Optional<User> user = userRepository.findByEmail(email);
         BigDecimal coefficient = BigDecimal.ONE;
         if (user.isPresent()){

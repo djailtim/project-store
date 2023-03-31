@@ -7,7 +7,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,7 +18,7 @@ import java.util.List;
 public class UserRestController {
 
     private final UserService userService;
-
+    
     @GetMapping
     public List<UserResponse> findAll() {
         return userService.findAll();
@@ -27,7 +26,7 @@ public class UserRestController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public UserResponse create(@RequestBody @Valid UserRequest user){
+    public UserResponse create(@RequestBody @Valid UserRequest user) {
         return userService.save(user);
     }
 

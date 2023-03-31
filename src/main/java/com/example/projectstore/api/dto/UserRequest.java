@@ -17,8 +17,7 @@ public class UserRequest {
 
     @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#&()–[{}]:;',?/*~$^+=<>]).{8,20}$")
     private String password;
-    private String country;
-    private String currency;
+    private String countryCode;
     private Role role;
 
 }

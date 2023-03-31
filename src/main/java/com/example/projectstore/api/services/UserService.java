@@ -2,14 +2,16 @@ package com.example.projectstore.api.services;
 
 import com.example.projectstore.api.dto.UserRequest;
 import com.example.projectstore.api.exceptions.DuplicatedEmailException;
-import com.example.projectstore.api.exceptions.UserNotFoundException;
 import com.example.projectstore.api.model.User;
 import com.example.projectstore.api.repositories.UserRepository;
 import com.example.projectstore.api.responses.UserResponse;
+import com.example.projectstore.clients.ibge.CountryService;
+import com.example.projectstore.clients.ibge.dto.CurrencyDTO;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -18,10 +20,12 @@ public class UserService {
     private final UserRepository userRepository;
     private final ModelMapper modelMapper;
     private final PasswordEncoder passwordEncoder;
+    private final CountryService countryService;
 
-    private UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    private UserService(UserRepository userRepository, PasswordEncoder passwordEncoder,  CountryService countryService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.countryService = countryService;
         this.modelMapper = new ModelMapper();
     }
 
@@ -38,7 +42,11 @@ public class UserService {
             throw new DuplicatedEmailException("E-mail já cadastrado.");
         }
         userRequest.setPassword(passwordEncoder.encode(userRequest.getPassword()));
-        User userCreated = this.userRepository.save(modelMapper.map(userRequest, User.class));
+        User userCreated = modelMapper.map(userRequest, User.class);
+        CurrencyDTO currencyDTO = countryService.search(userRequest.getCountryCode());
+        userCreated.setCurrency(currencyDTO.getUnityMonetary());
+        userCreated.setCountry(currencyDTO.getNameCountry());
+        userRepository.save(userCreated);
         return modelMapper.map(userCreated, UserResponse.class);
     }
 
@@ -57,8 +65,9 @@ public class UserService {
         user.setName(userRequest.getName());
         user.setEmail(userRequest.getEmail());
         user.setPassword(userRequest.getPassword());
-        user.setCountry(userRequest.getCountry());
-        user.setCurrency(userRequest.getCurrency());
+        CurrencyDTO currencyDTO = countryService.search(userRequest.getCountryCode());
+        user.setCountry(currencyDTO.getNameCountry());
+        user.setCurrency(currencyDTO.getUnityMonetary());
         userRepository.save(user);
         return modelMapper.map(user, UserResponse.class);
     }
