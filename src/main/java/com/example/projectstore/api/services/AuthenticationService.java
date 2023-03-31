@@ -1,5 +1,7 @@
 package com.example.projectstore.api.services;
 
+import com.example.projectstore.api.model.TokenValidator;
+import com.example.projectstore.api.repositories.TokenRepository;
 import com.example.projectstore.api.responses.AuthenticationResponse;
 import com.example.projectstore.api.model.User;
 import com.example.projectstore.api.repositories.UserRepository;
@@ -16,13 +18,20 @@ public class AuthenticationService {
     private final UserRepository userRepository;
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
+    private final TokenRepository tokenRepository;
 
     public AuthenticationResponse login(String email, String password) {
         User user = userRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado."));
         var authentication = new UsernamePasswordAuthenticationToken(email, password);
         authenticationManager.authenticate(authentication);
-
         String token = jwtService.createToken(user);
+
+        TokenValidator tokenValidator = new TokenValidator();
+        tokenValidator.setExpired(false);
+        tokenValidator.setUserId(user.getId());
+        tokenValidator.setToken(token);
+        tokenValidator.setRole(user.getRole());
+        tokenRepository.save(tokenValidator);
         return new AuthenticationResponse(user.getId(), token);
     }
 

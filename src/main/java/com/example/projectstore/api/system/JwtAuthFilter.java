@@ -1,4 +1,5 @@
 package com.example.projectstore.api.system;
+import com.example.projectstore.api.repositories.TokenRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -27,6 +28,8 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
     private final UserDetailsService userDetailsService;
 
+    private final TokenRepository tokenRepository;
+
 
 
     @Override
@@ -45,7 +48,9 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         final String username = this.jwtService.extractUsername(jwt);
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null){
             UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
-            if (this.jwtService.isTokenValid(jwt, userDetails)){
+            var isTokenValid = tokenRepository.findByToken(jwt)
+                    .map(token -> !token.getExpired()).orElse(false);
+            if (this.jwtService.isTokenValid(jwt, userDetails) && isTokenValid){
                 this.setAuthTokenOnSecurityContext(request, userDetails);
             }
         }
