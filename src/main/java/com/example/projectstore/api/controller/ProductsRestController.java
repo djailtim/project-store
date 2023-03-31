@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
 
-@PreAuthorize("hasAnyRole('USER', 'ADMIN')")
 @RestController
 @RequestMapping("/products")
 public class ProductsRestController {
@@ -19,7 +18,7 @@ public class ProductsRestController {
     }
 
     @GetMapping(headers = "token")
-    public List<ProductResponse> getAll(@RequestHeader String token){
+    public List<ProductResponse> getAll(@RequestHeader("token") String token){
         return productsService.getAll(token);
     }
 

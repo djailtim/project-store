@@ -1,12 +1,15 @@
-package com.example.projectstore.api.order;
+package com.example.projectstore.api.services;
 
 import com.example.projectstore.api.exceptions.NotFoundException;
 import com.example.projectstore.api.exceptions.UserNotMatchOrderException;
+import com.example.projectstore.api.model.Order;
 import com.example.projectstore.api.model.User;
+import com.example.projectstore.api.model.OrderLine;
+import com.example.projectstore.api.repositories.OrderLineRepository;
+import com.example.projectstore.api.repositories.OrderRepository;
 import com.example.projectstore.api.repositories.ProductsDBRepository;
 import com.example.projectstore.api.repositories.UserRepository;
 import com.example.projectstore.api.responses.OrderResponse;
-import com.example.projectstore.api.services.AwesomeService;
 import com.example.projectstore.api.system.JwtService;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -78,7 +81,7 @@ public class OrderService {
     }
     public OrderResponse placeOrder(String token) {
         Long userId = getUserIdByToken(token);
-        List<OrderLine> orderLineList = orderLineRepository.getAllByUserId(userId).stream().filter(orderLine -> orderLine.getOrdered().equals(false)).toList();
+        List<OrderLine> orderLineList = orderLineRepository.getAllByUserId(userId).stream().filter(orderLine -> !orderLine.getOrdered()).toList();
         Order order = new Order();
         order.setUserId(userId);
         order.setOrderLineList(orderLineList);

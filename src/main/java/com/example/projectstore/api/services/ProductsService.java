@@ -10,6 +10,7 @@ import com.example.projectstore.clients.dummy.ProductDTO;
 import com.example.projectstore.clients.dummy.ProductsRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.webjars.NotFoundException;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -51,11 +52,14 @@ public class ProductsService {
     }
 
     private BigDecimal getCoefficient(String token) {
-        String email =  jwtService.extractUsername(token); /*ESTOURAR EXCEÇÃO*/
-        Optional<User> user = userRepository.findByEmail(email);
         BigDecimal coefficient = BigDecimal.ONE;
-        if (user.isPresent()){
-            if(!user.get().getCurrency().equals("USD")) coefficient = awesomeService.search("USD-" + user.get().getCurrency()).getCoefficient();
+        if (token != null) {
+            String email = jwtService.extractUsername(token);
+            Optional<User> user = userRepository.findByEmail(email);
+            if (user.isPresent()) {
+                if (!user.get().getCurrency().equals("USD"))
+                    coefficient = awesomeService.search("USD-" + user.get().getCurrency()).getCoefficient();
+            }
         }
         return coefficient;
     }
@@ -64,7 +68,7 @@ public class ProductsService {
         Optional<ProductResponse> optional = new ArrayList<>(List.of(DBRepository.findProductByProductDTOid(productDTOId))).stream().map( productsDTO ->
                 modelMapper.map(productsDTO, ProductResponse.class)).findAny();
       optional.ifPresent(productResponse -> convertPrice(productResponse, token));
-      return optional.orElseThrow();// ESTOURAR EXCESSAO;
+      return optional.orElseThrow(() -> new NotFoundException("Produto nao encontrado"));
     }
 
     private ProductResponse convertPrice(ProductResponse productResponse, String token){
@@ -73,7 +77,7 @@ public class ProductsService {
        return productResponse;
     }
 
-    public List<ProductResponse> searchByName(String name, String token) { //OPTIONAL???
+    public List<ProductResponse> searchByName(String name, String token) {
         return DBRepository.searchByTitleStartingWith(name).stream().map( product ->
                 modelMapper.map(product, ProductResponse.class))
                 .peek(productResponse -> convertPrice(productResponse, token)).toList();

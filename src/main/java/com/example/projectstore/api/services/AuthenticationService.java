@@ -1,6 +1,6 @@
 package com.example.projectstore.api.services;
 
-import com.example.projectstore.api.auth.AuthenticationResponse;
+import com.example.projectstore.api.responses.AuthenticationResponse;
 import com.example.projectstore.api.model.User;
 import com.example.projectstore.api.repositories.UserRepository;
 import com.example.projectstore.api.system.JwtService;

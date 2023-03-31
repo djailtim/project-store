@@ -1,6 +1,6 @@
 package com.example.projectstore.api.services;
 
-import com.example.projectstore.api.dto.UserRequest;
+import com.example.projectstore.api.resquests.UserRequest;
 import com.example.projectstore.api.exceptions.DuplicatedEmailException;
 import com.example.projectstore.api.model.User;
 import com.example.projectstore.api.repositories.UserRepository;

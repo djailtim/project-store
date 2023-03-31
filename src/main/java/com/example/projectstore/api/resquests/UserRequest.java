@@ -1,6 +1,6 @@
-package com.example.projectstore.api.dto;
+package com.example.projectstore.api.resquests;
 
-import com.example.projectstore.api.model.Role;
+import com.example.projectstore.api.Enums.Role;
 import jakarta.validation.constraints.Pattern;
 import lombok.*;
 

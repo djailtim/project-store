@@ -1,4 +1,4 @@
-package com.example.projectstore.api.order;
+package com.example.projectstore.api.model;
 
 import jakarta.persistence.*;
 import lombok.*;

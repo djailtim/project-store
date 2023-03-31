@@ -1,6 +1,6 @@
 package com.example.projectstore.api.controller;
 
-import com.example.projectstore.api.dto.UserRequest;
+import com.example.projectstore.api.resquests.UserRequest;
 import com.example.projectstore.api.responses.UserResponse;
 import com.example.projectstore.api.services.UserService;
 import jakarta.validation.Valid;
@@ -36,12 +36,12 @@ public class UserRestController {
     public UserResponse findById(@PathVariable Long id) {
         return userService.findById(id);
     }
-
+    @ResponseStatus(HttpStatus.CREATED)
     @PutMapping("/{id}")
     public UserResponse update(@PathVariable Long id, @RequestBody @Valid UserRequest user) {
         return userService.update(id, user);
     }
-
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id) {
         userService.delete(id);

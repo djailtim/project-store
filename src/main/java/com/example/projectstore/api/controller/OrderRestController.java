@@ -1,6 +1,8 @@
-package com.example.projectstore.api.order;
+package com.example.projectstore.api.controller;
 
+import com.example.projectstore.api.services.OrderService;
 import com.example.projectstore.api.responses.OrderResponse;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,18 +27,18 @@ public class OrderRestController {
     }
 
     @GetMapping(value = "/{orderId}", headers = "token")
-    public OrderResponse getById(@PathVariable Long orderId, @RequestHeader String token) {
+    public OrderResponse getById(@PathVariable Long orderId, @RequestHeader("token") String token) {
         return orderService.getById(orderId, token);
     }
-
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping(value = "/{orderId}", headers = "token")
-    public void delete(@PathVariable Long orderId, @RequestHeader String token) {
+    public void delete(@PathVariable Long orderId, @RequestHeader("token") String token) {
         orderService.delete(orderId, token);
 
     }
-
+    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(value = "/placeOrder", headers = "token")
-    public OrderResponse placeOrder(@RequestHeader String token) {
+    public OrderResponse placeOrder(@RequestHeader("token") String token) {
         return orderService.placeOrder(token);
     }
 }

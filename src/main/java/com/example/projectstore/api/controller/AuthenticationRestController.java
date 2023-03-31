@@ -1,12 +1,11 @@
-package com.example.projectstore.api.auth;
+package com.example.projectstore.api.controller;
 
-import com.example.projectstore.api.repositories.UserRepository;
+import com.example.projectstore.api.responses.AuthenticationResponse;
+import com.example.projectstore.api.resquests.AuthenticationRequest;
 import com.example.projectstore.api.services.AuthenticationService;
-import com.example.projectstore.api.system.JwtService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.web.bind.annotation.*;
 
 

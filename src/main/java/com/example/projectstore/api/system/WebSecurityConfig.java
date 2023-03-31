@@ -39,8 +39,7 @@ public class WebSecurityConfig {
         "/health/**",
         // Login
         "/auth/login",
-            "/products/**",
-            "/products**"
+            "/products/**"
     };
 
 
@@ -52,11 +51,18 @@ public class WebSecurityConfig {
                 requests
                     .requestMatchers(PathRequest.toH2Console()).permitAll()
                     .requestMatchers(AUTH_ALLOWLIST).permitAll()
-                    .requestMatchers(HttpMethod.POST, "/user") .hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/user") .hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/user").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.PUT, "/user").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/user").hasRole("ADMIN")
-                    .anyRequest().authenticated()
+                        .requestMatchers(HttpMethod.PUT, "/user/{id}").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/user/{id}").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/user/orderline").hasAnyRole("ADMIN", "USER")
+                        .requestMatchers(HttpMethod.POST, "/user/orderline/**").hasAnyRole("ADMIN", "USER")
+                        .requestMatchers(HttpMethod.PUT, "/user/orderline/**").hasAnyRole("ADMIN", "USER")
+                        .requestMatchers(HttpMethod.DELETE, "/user/orderline/**").hasAnyRole("ADMIN", "USER")
+                        .requestMatchers(HttpMethod.POST, "/user/order/**").hasAnyRole("ADMIN", "USER")
+                        .requestMatchers(HttpMethod.GET, "/user/order/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/user/order/**").hasRole("ADMIN")
+                        .anyRequest().authenticated()
             )
             .headers().frameOptions().disable()
             .and()

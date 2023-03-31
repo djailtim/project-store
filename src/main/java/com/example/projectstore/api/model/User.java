@@ -1,4 +1,5 @@
 package com.example.projectstore.api.model;
+import com.example.projectstore.api.Enums.Role;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.extern.log4j.Log4j2;

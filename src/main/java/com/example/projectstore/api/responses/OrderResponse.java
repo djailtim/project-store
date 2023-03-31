@@ -1,5 +1,5 @@
 package com.example.projectstore.api.responses;
-import com.example.projectstore.api.order.OrderLine;
+import com.example.projectstore.api.model.OrderLine;
 import jakarta.persistence.*;
 import lombok.*;
 

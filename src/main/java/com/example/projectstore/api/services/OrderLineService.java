@@ -1,8 +1,11 @@
-package com.example.projectstore.api.order;
+package com.example.projectstore.api.services;
 
 import com.example.projectstore.api.exceptions.DuplicatedException;
 import com.example.projectstore.api.exceptions.NotFoundException;
+import com.example.projectstore.api.model.OrderLine;
 import com.example.projectstore.api.model.User;
+import com.example.projectstore.api.repositories.OrderLineRepository;
+import com.example.projectstore.api.repositories.OrderRepository;
 import com.example.projectstore.api.repositories.ProductsDBRepository;
 import com.example.projectstore.api.repositories.UserRepository;
 import com.example.projectstore.api.responses.OrderLineResponse;
@@ -37,8 +40,8 @@ public class OrderLineService {
 
     public OrderLineResponse save(String token, Long productId, Long quantity) {
         Long userId = getUserIdByToken(token);
-        if (orderLineRepository.findAll().stream().anyMatch(orderLine ->
-                orderLine.getProductId().equals(productId) && !orderLine.getOrdered())) {
+        if (orderLineRepository.getAllByUserId(userId).stream()
+           .anyMatch(orderLine -> orderLine.getProductId().equals(productId) && !orderLine.getOrdered())) {
            throw new DuplicatedException("Linha de pedido duplicada"); //ESTOURAR EXCESSAO
         }
         OrderLine orderLine = new OrderLine();
@@ -71,7 +74,7 @@ public class OrderLineService {
 
     private OrderLine findById(Long userId, Long productId){
        return orderLineRepository.findAll().stream().filter(orderLine ->
-               orderLine.getUserId().equals(userId) && orderLine.getProductId().equals(productId))
+               orderLine.getUserId().equals(userId) && orderLine.getProductId().equals(productId) && !orderLine.getOrdered())
                .findFirst().orElseThrow(() -> new NotFoundException("Linha de pedido nao encontrada"));
     }
 
@@ -80,4 +83,10 @@ public class OrderLineService {
     }
 
 
+    public List<OrderLineResponse> findAllAvaliable(String token) {
+        Long userId = getUserIdByToken(token);
+        return orderLineRepository.findAll().stream()
+                .filter(orderLine -> orderLine.getUserId().equals(userId)  && !orderLine.getOrdered())
+                .map(orderLine -> modelMapper.map(orderLine, OrderLineResponse.class)).toList();
+    }
 }
