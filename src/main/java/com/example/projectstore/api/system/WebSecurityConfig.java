@@ -1,4 +1,5 @@
 package com.example.projectstore.api.system;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
@@ -38,7 +39,6 @@ public class WebSecurityConfig {
         "/health/**",
         // Login
         "/auth/login",
-            "/user/**",
             "/products/**",
             "/products**"
     };
@@ -52,7 +52,10 @@ public class WebSecurityConfig {
                 requests
                     .requestMatchers(PathRequest.toH2Console()).permitAll()
                     .requestMatchers(AUTH_ALLOWLIST).permitAll()
-                    .requestMatchers(HttpMethod.POST, "/users").permitAll()
+                    .requestMatchers(HttpMethod.POST, "/user") .hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/user").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/user").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/user").hasRole("ADMIN")
                     .anyRequest().authenticated()
             )
             .headers().frameOptions().disable()

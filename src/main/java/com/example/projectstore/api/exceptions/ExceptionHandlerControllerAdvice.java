@@ -13,8 +13,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -29,8 +27,15 @@ public class ExceptionHandlerControllerAdvice extends ResponseEntityExceptionHan
         return new ResponseEntity<>(errorMessage, httpStatus);
     }
 
-    @ExceptionHandler(UserNotFoundException.class)
-    public ResponseEntity<Object> handleUserNotFoundException(UserNotFoundException ex) {
+    @ExceptionHandler(DuplicatedException.class)
+    public ResponseEntity<Object> handleDuplicatedEmailException(DuplicatedException ex) {
+        String errorMessage = ex.getMessage();
+        HttpStatus httpStatus = HttpStatus.CONFLICT;
+        return new ResponseEntity<>(errorMessage, httpStatus);
+    }
+
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<Object> handleUserNotFoundException(NotFoundException ex) {
         String errorMessage = ex.getMessage();
         HttpStatus httpStatus = HttpStatus.NOT_FOUND;
         return new ResponseEntity<>(errorMessage, httpStatus);
@@ -38,6 +43,12 @@ public class ExceptionHandlerControllerAdvice extends ResponseEntityExceptionHan
 
     @ExceptionHandler(CategoryNotFoundException.class)
     public ResponseEntity<Object> handleCategoryNotFoundException(CategoryNotFoundException ex) {
+        String errorMessage = ex.getMessage();
+        HttpStatus httpStatus = HttpStatus.NOT_FOUND;
+        return new ResponseEntity<>(errorMessage, httpStatus);
+    }
+    @ExceptionHandler(UserNotMatchOrderException.class)
+    public ResponseEntity<Object> handleUserNotMatchOrderException(UserNotMatchOrderException ex) {
         String errorMessage = ex.getMessage();
         HttpStatus httpStatus = HttpStatus.NOT_FOUND;
         return new ResponseEntity<>(errorMessage, httpStatus);

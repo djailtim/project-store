@@ -1,7 +1,6 @@
 package com.example.projectstore.api.services;
 
 import com.example.projectstore.api.auth.AuthenticationResponse;
-import com.example.projectstore.api.exceptions.UserNotFoundException;
 import com.example.projectstore.api.model.User;
 import com.example.projectstore.api.repositories.UserRepository;
 import com.example.projectstore.api.system.JwtService;
@@ -10,8 +9,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor

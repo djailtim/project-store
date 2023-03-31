@@ -1,38 +1,42 @@
 package com.example.projectstore.api.order;
 
 import com.example.projectstore.api.responses.OrderResponse;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/users/{userId}/order")
+@RequestMapping("/user/order")
+@PreAuthorize("hasAnyRole('ADMIN', 'USER')")
 public class OrderRestController {
 
     private final OrderService orderService;
 
 
-    public OrderRestController(OrderService orderService){
+    public OrderRestController(OrderService orderService) {
         this.orderService = orderService;
 
     }
 
-    @GetMapping
-    public List<OrderResponse> getAll(@PathVariable Long userId){
-        return orderService.getAll(userId);
-    }
-    @GetMapping("/{orderId}")
-    public OrderResponse getById(@PathVariable Long orderId){
-       return orderService.getById(orderId);
+    @GetMapping(headers = "token")
+    public List<OrderResponse> getAll(@RequestHeader String token) {
+        return orderService.getAll(token);
     }
 
-    @DeleteMapping("/{orderId}")
-    public void delete(@PathVariable Long orderId){
-        orderService.delete(orderId);
+    @GetMapping(value = "/{orderId}", headers = "token")
+    public OrderResponse getById(@PathVariable Long orderId, @RequestHeader String token) {
+        return orderService.getById(orderId, token);
+    }
+
+    @DeleteMapping(value = "/{orderId}", headers = "token")
+    public void delete(@PathVariable Long orderId, @RequestHeader String token) {
+        orderService.delete(orderId, token);
 
     }
-    @PostMapping("/placeOrder")
-    public OrderResponse placeOrder(@PathVariable Long userId){
-        return orderService.placeOrder(userId);
+
+    @PostMapping(value = "/placeOrder", headers = "token")
+    public OrderResponse placeOrder(@RequestHeader String token) {
+        return orderService.placeOrder(token);
     }
 }
