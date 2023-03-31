@@ -42,8 +42,8 @@ public class WebSecurityConfig {
         "/health/**",
         // Login
         "/auth/login",
-            "/products/**",
-            "/storelogin"
+            "/storelogin",
+            "/user"
     };
 
 
@@ -55,10 +55,11 @@ public class WebSecurityConfig {
                 requests
                     .requestMatchers(PathRequest.toH2Console()).permitAll()
                     .requestMatchers(AUTH_ALLOWLIST).permitAll()
-                        .requestMatchers(HttpMethod.POST, "/user") .hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.GET, "/user").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.PUT, "/user/{id}").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/user/{id}").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/admin/user/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/admin/user/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/admin/user/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/admin/user/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/products/**").hasAnyRole("ADMIN", "USER")
                         .requestMatchers(HttpMethod.GET, "/user/orderline").hasAnyRole("ADMIN", "USER")
                         .requestMatchers(HttpMethod.POST, "/user/orderline/**").hasAnyRole("ADMIN", "USER")
                         .requestMatchers(HttpMethod.PUT, "/user/orderline/**").hasAnyRole("ADMIN", "USER")
@@ -66,8 +67,7 @@ public class WebSecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/user/order/**").hasAnyRole("ADMIN", "USER")
                         .requestMatchers(HttpMethod.GET, "/user/order/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/user/order/**").hasRole("ADMIN")
-                        .anyRequest().authenticated()
-            )
+                        .anyRequest().authenticated())
             .headers().frameOptions().disable()
             .and()
             .sessionManagement()

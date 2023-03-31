@@ -10,4 +10,8 @@ public class LoginController {
     }
 
 
+    @GetMapping("/login")
+    public String bootDois(){
+            return "home";
+    }
 }

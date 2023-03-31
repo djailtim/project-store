@@ -13,11 +13,11 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/admin/user")
 @RequiredArgsConstructor
 @Log4j2
 @PreAuthorize("hasRole('ADMIN')")
-public class UserRestController {
+public class AdminUserRestController {
 
     private final UserService userService;
 
@@ -26,11 +26,11 @@ public class UserRestController {
         return userService.findAll();
     }
 
-    @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public UserResponse create(@RequestBody @Valid UserRequest user) {
-        return userService.save(user);
-    }
+//    @PostMapping
+//    @ResponseStatus(HttpStatus.CREATED)
+//    public UserResponse create(@RequestBody @Valid UserRequest user) {
+//        return userService.save(user);
+//    }
 
     @GetMapping("/{id}")
     public UserResponse findById(@PathVariable Long id) {
