@@ -27,6 +27,13 @@ public class ExceptionHandlerControllerAdvice extends ResponseEntityExceptionHan
         return new ResponseEntity<>(errorMessage, httpStatus);
     }
 
+    @ExceptionHandler(NotAuthorizedException.class)
+    public ResponseEntity<Object> handleDuplicatedEmailException(NotAuthorizedException ex) {
+        String errorMessage = ex.getMessage();
+        HttpStatus httpStatus = HttpStatus.CONFLICT;
+        return new ResponseEntity<>(errorMessage, httpStatus);
+    }
+
     @ExceptionHandler(DuplicatedException.class)
     public ResponseEntity<Object> handleDuplicatedEmailException(DuplicatedException ex) {
         String errorMessage = ex.getMessage();

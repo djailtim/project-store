@@ -13,6 +13,8 @@ public class OrderLineResponse {
     private String title;
     private Long quantity;
 
+    private Long id;
+
 }
 
 

@@ -51,7 +51,11 @@ public class OrderService {
         return orderRepository.findAll().stream().filter(order -> order.getUserId().equals(userId))
                 .map(order -> modelMapper.map(order, OrderResponse.class)).toList();
     }
-
+    private User getUserByToken(String token){
+        String email = jwtService.extractUsername(token);
+        Optional<User> userOptional = userRepository.findByEmail(email);
+        return userOptional.orElseThrow(() -> new NotFoundException("Usuario nao encontrado"));
+    }
 
     private Long getUserIdByToken(String token){
         String email = jwtService.extractUsername(token);
@@ -69,8 +73,9 @@ public class OrderService {
     public void delete(Long orderId, HttpServletRequest request) {
         String token = getToken(request);
         Long userId = getUserIdByToken(token);
+        User user = getUserByToken(token);
         Order orderOptional = orderRepository.findById(orderId).orElseThrow(() -> new NotFoundException("Pedido nao encontrado"));
-        if (orderOptional.getUserId().equals(userId)) orderRepository.deleteById(orderId);
+        if (orderOptional.getUserId().equals(userId) || user.getRole().toString().equals("ADMIN")) orderRepository.deleteById(orderId);
         else throw new UserNotMatchOrderException("Pedido de usuario diferente.");
     }
 

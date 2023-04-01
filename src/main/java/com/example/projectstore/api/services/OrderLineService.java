@@ -1,6 +1,7 @@
 package com.example.projectstore.api.services;
 
 import com.example.projectstore.api.exceptions.DuplicatedException;
+import com.example.projectstore.api.exceptions.NotAuthorizedException;
 import com.example.projectstore.api.exceptions.NotFoundException;
 import com.example.projectstore.api.model.OrderLine;
 import com.example.projectstore.api.model.User;
@@ -11,7 +12,6 @@ import com.example.projectstore.api.repositories.UserRepository;
 import com.example.projectstore.api.responses.OrderLineResponse;
 import com.example.projectstore.api.system.JwtService;
 import jakarta.servlet.http.HttpServletRequest;
-import org.aspectj.weaver.ast.Or;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
@@ -28,7 +28,7 @@ public class OrderLineService {
     private final UserRepository userRepository;
 
 
-    public OrderLineService(OrderLineRepository orderLineRepository,UserRepository userRepository, ProductsDBRepository productsDBRepository, JwtService jwtService, OrderRepository orderRepository) {
+    public OrderLineService(OrderLineRepository orderLineRepository,UserRepository userRepository, ProductsDBRepository productsDBRepository, JwtService jwtService) {
         this.orderLineRepository = orderLineRepository;
         this.productsDBRepository = productsDBRepository;
         this.userRepository = userRepository;
@@ -39,6 +39,11 @@ public class OrderLineService {
         String email = jwtService.extractUsername(token);
         Optional<User> userOptional = userRepository.findByEmail(email);
         return userOptional.orElseThrow(() -> new NotFoundException("Usuario nao encontrado")).getId();
+    }
+    private User getUserByToken(String token){
+        String email = jwtService.extractUsername(token);
+        Optional<User> userOptional = userRepository.findByEmail(email);
+        return userOptional.orElseThrow(() -> new NotFoundException("Usuario nao encontrado"));
     }
 
     public OrderLineResponse save(HttpServletRequest request, Long productId, Long quantity) {
@@ -64,26 +69,37 @@ public class OrderLineService {
     public OrderLineResponse delete(HttpServletRequest request, Long productId) {
         String token = getToken(request);
         Long userId = getUserIdByToken(token);
-        OrderLine orderLine = findById(userId, productId);
-        orderLineRepository.delete(orderLine);
+        OrderLine orderLine = findById(productId);
+        User user = getUserByToken(token);
+        if(user.getRole().toString().equals("ADMIN") || userId.equals(findById(productId).getUserId()) ){
+            orderLineRepository.delete(orderLine);
+        } else throw new NotAuthorizedException("Usuario nao autorizado");
         return modelMapper.map(orderLine, OrderLineResponse.class);
     }
     public OrderLineResponse update(HttpServletRequest request, Long productId, Long quantity) {
         String token = getToken(request);
         Long userId = getUserIdByToken(token);
-        OrderLine OrderLine = findById(userId, productId);
-        OrderLine.setQuantity(quantity);
-        orderLineRepository.save(OrderLine);
-        return modelMapper.map(OrderLine, OrderLineResponse.class);
+        OrderLine orderLine = findById(productId);
+        User user = getUserByToken(token);
+        orderLine.setQuantity(quantity);
+        if(user.getRole().toString().equals("ADMIN") || userId.equals(findById(productId).getUserId())){
+            orderLineRepository.save(orderLine);
+        } else throw new NotAuthorizedException("Usuario nao autorizado");
+        return modelMapper.map(orderLine, OrderLineResponse.class);
     }
 
     public void setOrdered(List<OrderLine> orderLineList){
         orderLineList.stream().peek(orderLine -> orderLine.setOrdered(true)).forEach(orderLineRepository::save);
     }
 
-    private OrderLine findById(Long userId, Long productId){
+    private OrderLine findById(Long productId){
         return orderLineRepository.findAll().stream().filter(orderLine ->
-                        orderLine.getUserId().equals(userId) && orderLine.getProductId().equals(productId) && !orderLine.getOrdered())
+        orderLine.getId().equals(productId)).findFirst().orElseThrow(() -> new NotFoundException("Linha de pedido nao encontrada"));
+    }
+
+    private OrderLine findByProductId(Long productId){
+        return orderLineRepository.findAll().stream().filter(orderLine ->
+                         orderLine.getProductId().equals(productId) && !orderLine.getOrdered())
                 .findFirst().orElseThrow(() -> new NotFoundException("Linha de pedido nao encontrada"));
     }
 
